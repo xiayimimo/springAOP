@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+
+xmlns:mvc="http://www.springframework.org/schema/mvc"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:aop="http://www.springframework.org/schema/aop"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+">
+
+<!-- 注解驱动 自动去扫描到注解的类 -->
+<!-- <context:component-scan base-package="com.bwf.controller"></context:component-scan>
+<context:component-scan base-package="com.bwf.service"></context:component-scan>
+<context:component-scan base-package="com.bwf.dao"></context:component-scan> -->
+<!-- 配置视图解析器 -->
+<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+<property name="prefix" value="/WEB-INF/"></property>
+<property name="suffix" value=".jsp"></property>
+</bean>
+
+<bean id="audience" class="aop.Audience"/>
+<bean id="performer" class="aop.Performer"/>
+
+<!-- <aop:config> 前置 后置通知
+    <aop:aspect ref="audience">
+        <aop:before pointcut=
+            "execution(* aop.Performer.perform(..))"
+             method="takeSeats"/>
+        <aop:before pointcut=
+            "execution(* aop.Performer.perform(..))"
+             method="turnOffCellPhones"/>
+        <aop:after-returning pointcut=
+            "execution(* aop.Performer.perform(..))"
+             method="applaud"/>	
+        <aop:after-throwing pointcut=
+            "execution(* aop.Performer.perform(..))"
+             method="failure"/>
+    </aop:aspect>
+</aop:config> -->
+<aop:aspectj-autoproxy proxy-target-class="true" />
+<!-- <aop:config proxy-target-class="true"> 环绕通知
+    <aop:aspect ref="audience">
+        <aop:pointcut id="performance" 
+            expression="execution(* aop.Performer.perform(..))"/>
+        <aop:around 
+            pointcut-ref="performance"
+            method="watch"/>
+    </aop:aspect>
+</aop:config> -->
+<!-- <bean id="volunteer" class="aop.Volunteer"/> 通过切面类监听切点参数
+<bean id="magician" class="aop.MindReaderImpl"/>
+<aop:config proxy-target-class="true">
+    <aop:aspect ref="magician">
+        <aop:pointcut id="thinking" expression="
+            execution(* aop.Volunteer.thinkOfSomething(String))
+            and args(thoughts)"/>
+        <aop:before pointcut-ref="thinking"
+            method="interceptThoughts"
+            arg-names="thoughts"/>
+    </aop:aspect>
+</aop:config> -->
+<bean id="contestant" class="aop.OutstandingContestant"></bean>
+<aop:config proxy-target-class="true">
+    <aop:aspect>
+        <aop:declare-parents 
+            types-matching="aop.Performer+" 
+            implement-interface="aop.Contestant"
+            default-impl="aop.OutstandingContestant"/>
+    </aop:aspect>
+</aop:config>
+
+</beans>
